@@ -1,0 +1,480 @@
+{
+  "version": "1.0.0",
+  "description": "Homelab Software Development Agent Registry",
+  "categories": {
+    "core-development": {
+      "description": "Essential development agents for core software engineering tasks",
+      "agents": [
+        "coder",
+        "tester",
+        "planner",
+        "researcher",
+        "implementer-sparc-coder",
+        "production-validator",
+        "code-analyzer",
+        "architecture-analyst",
+        "implementation-specialist"
+      ]
+    },
+    "language-specialists": {
+      "description": "Programming language experts and specialists",
+      "agents": [
+        "javascript-typescript-specialist",
+        "nodejs-specialist",
+        "python-specialist",
+        "html-specialist",
+        "css-specialist",
+        "typescript-specialist"
+      ]
+    },
+    "framework-specialists": {
+      "description": "Framework and library experts",
+      "agents": [
+        "react-19-specialist",
+        "expressjs-specialist",
+        "tailwind-css-specialist",
+        "material-ui-component-specialist",
+        "vite-build-tool-specialist"
+      ]
+    },
+    "database-specialists": {
+      "description": "Database and data management experts",
+      "agents": [
+        "database-architect",
+        "database-systems-specialist",
+        "postgresql-specialist",
+        "redis-specialist",
+        "schema-designer-optimizer",
+        "database-sql-code-generator-agent",
+        "table-structure-governance",
+        "table-index-performance-tuning",
+        "automated-query-procedure-generation-agent"
+      ]
+    },
+    "testing-specialists": {
+      "description": "Testing and quality assurance agents",
+      "agents": [
+        "test-engineer",
+        "tdd-london-swarm",
+        "test-writer-specialist",
+        "test-methodology-expert",
+        "jest-testing-specialist",
+        "playwright-testing-specialist",
+        "cypress-e2e-testing-specialist",
+        "integration-test-expert",
+        "acceptance-test-specialist",
+        "smoke-sanity-test-agent",
+        "stress-test-specialist",
+        "performance-load-integration-specialist",
+        "regression-test-specialist",
+        "security-testing-specialist",
+        "bdd-specialist",
+        "system-test-specialist",
+        "end-to-end-integration-specialist",
+        "in-container-test-runner",
+        "sandbox-test-harness-agent",
+        "gui-ui-testing-agent",
+        "test-orchestration-coordinator",
+        "test-plan-contrarian",
+        "tdd-london-swarm",
+        "production-validator"
+      ]
+    },
+    "devops-cicd": {
+      "description": "DevOps and CI/CD specialists",
+      "agents": [
+        "cicd-engineer",
+        "devops-cicd-specialist",
+        "docker-containerization-specialist",
+        "container-image-management",
+        "docker-installation-bootstrap",
+        "multi-arch-docker-build",
+        "resource-constraint-runtime-policy",
+        "persistent-storage-setup",
+        "docker-in-docker-specialist",
+        "docker-compose-orchestrator",
+        "cicd-docker-integration",
+        "multi-agent-docker-coordination",
+        "dockerfile-generator-optimizer",
+        "cicd-self-healing-pipeline-agent",
+        "ci-cd-pipeline-integration-specialist",
+        "ops-cicd-github",
+        "devops-automation-script-writer-agent",
+        "registry-sync-mirror"
+      ]
+    },
+    "cloud-infrastructure": {
+      "description": "Cloud and infrastructure specialists",
+      "agents": [
+        "cloud-infrastructure-specialist",
+        "scalability-performance-engineer",
+        "idp-platform-architect",
+        "observability-platform-engineer",
+        "scaling-high-availability-agent",
+        "monitoring-proactive-alerting",
+        "maintenance-health-check-agent",
+        "multi-environment-orchestrator-agent",
+        "health-status-monitoring"
+      ]
+    },
+    "security-compliance": {
+      "description": "Security and compliance agents",
+      "agents": [
+        "security-manager",
+        "compliance-security-officer",
+        "security-testing-specialist",
+        "vulnerability-scanner",
+        "zero-trust-enforcer",
+        "secrets-credential-scanner",
+        "deployment-security-guardian",
+        "container-vulnerability-scanner",
+        "database-security-compliance",
+        "code-security-analyzer",
+        "security-hardened-code-writer-agent",
+        "authentication",
+        "security-compliance-integration-specialist"
+      ]
+    },
+    "architecture-design": {
+      "description": "System architecture and design agents",
+      "agents": [
+        "architecture",
+        "architecture-analyst",
+        "design-pattern-implementer-agent",
+        "microservices-distributed-systems-agent",
+        "api-integration-architect",
+        "software-development-plan-agent",
+        "design-system-architect",
+        "responsive-design-architect",
+        "interaction-design-specialist",
+        "information-architecture-expert",
+        "performance-ux-optimizer",
+        "architecture-critique-agent"
+      ]
+    },
+    "code-quality": {
+      "description": "Code quality and optimization agents",
+      "agents": [
+        "code-analyzer",
+        "code-reviewer",
+        "code-security-analyzer",
+        "code-structure-analyzer",
+        "static-analysis-quality-agent",
+        "static-analysis-testing-agent",
+        "technical-debt-best-practices-agent",
+        "code-robustness-opponent",
+        "memory-optimizer",
+        "analyze-code-quality",
+        "static-analysis-reflection-agent",
+        "codebase-qa-agent",
+        "codebase-summarization-agent",
+        "code-review-feedback-implementation-agent"
+      ]
+    },
+    "api-integration": {
+      "description": "API and integration specialists",
+      "agents": [
+        "api-integration-architect",
+        "api-service-integration-specialist",
+        "docs-api-openapi",
+        "mcp-protocol-expert",
+        "data-flow-integration-specialist",
+        "agent-oriented-integration-manager",
+        "error-resiliency-integration-specialist",
+        "migration-upgrade-integration-specialist",
+        "security-compliance-integration-specialist",
+        "incremental-integration-specialist"
+      ]
+    },
+    "documentation": {
+      "description": "Documentation and knowledge management",
+      "agents": [
+        "comprehensive-documentation-agent",
+        "template-best-practices-agent",
+        "document-repository-organizer-agent",
+        "codebase-summarization-agent",
+        "function-class-explainer",
+        "code-example-usage-agent",
+        "standards-policy-agent",
+        "compliance-documentation-agent",
+        "acceptance-criteria-agent",
+        "prd-generator-agent",
+        "version-history-changelog-agent"
+      ]
+    },
+    "swarm-coordination": {
+      "description": "Swarm and multi-agent coordination",
+      "agents": [
+        "swarm",
+        "hierarchical-coordinator",
+        "mesh-coordinator",
+        "adaptive-coordinator",
+        "byzantine-coordinator",
+        "raft-manager",
+        "gossip-coordinator",
+        "quorum-manager",
+        "orchestrator-task",
+        "memory-coordinator",
+        "load-balancer",
+        "topology-optimizer",
+        "resource-allocator",
+        "performance-monitor",
+        "coordinator-swarm-init",
+        "sparc-coordinator",
+        "adaptive-coordinator",
+        "hierarchical-coordinator",
+        "mesh-coordinator"
+      ]
+    },
+    "github-repository": {
+      "description": "GitHub and repository management",
+      "agents": [
+        "github-modes",
+        "pr-manager",
+        "code-review-swarm",
+        "issue-tracker",
+        "release-manager",
+        "workflow-automation",
+        "project-board-sync",
+        "repo-architect",
+        "multi-repo-swarm",
+        "release-swarm",
+        "sync-coordinator",
+        "swarm-pr",
+        "swarm-issue",
+        "git-workflow-expert",
+        "github-pr-manager",
+        "code-review-swarm",
+        "github-modes",
+        "issue-tracker",
+        "multi-repo-swarm",
+        "pr-manager",
+        "project-board-sync",
+        "release-manager",
+        "release-swarm",
+        "repo-architect",
+        "swarm-issue",
+        "swarm-pr",
+        "sync-coordinator",
+        "workflow-automation"
+      ]
+    },
+    "development-methodology": {
+      "description": "Development methodology specialists",
+      "agents": [
+        "sparc-coordinator",
+        "implementer-sparc-coder",
+        "specification",
+        "pseudocode",
+        "refinement",
+        "architecture",
+        "planner",
+        "implementation-specialist",
+        "tdd-refactoring-specialist",
+        "migration-plan",
+        "migration-upgrade-plan-agent",
+        "architecture",
+        "pseudocode",
+        "refinement",
+        "specification"
+      ]
+    },
+    "specialized-development": {
+      "description": "Specialized development agents",
+      "agents": [
+        "base-template-generator",
+        "procedural-code-writer-agent",
+        "object-oriented-code-writer-agent",
+        "functional-code-writer-agent",
+        "declarative-code-writer-agent",
+        "event-driven-code-agent",
+        "idiomatic-language-expert-agent",
+        "code-generation-agent",
+        "plugin-extension-writer-agent",
+        "backend-api-code-writer-agent",
+        "frontend-ui-code-writer-agent",
+        "test-code-writer-agent",
+        "devops-automation-script-writer-agent",
+        "security-hardened-code-writer-agent",
+        "performance-optimized-code-agent",
+        "dev-backend-api"
+      ]
+    },
+    "ai-ml-engineering": {
+      "description": "AI and machine learning specialists",
+      "agents": []
+    },
+    "research-analysis": {
+      "description": "Research and code analysis",
+      "agents": [
+        "researcher",
+        "advanced-research-engine",
+        "codebase-qa-agent",
+        "dependency-dataflow-mapping-agent",
+        "gap-consistency-checker-agent",
+        "integration-dependency-mapping-agent",
+        "tech-constraints-feasibility-agent",
+        "search-fusion-expert",
+        "semantic-search-agent"]
+    },
+    "monitoring-debugging": {
+      "description": "Monitoring and debugging specialists",
+      "agents": [
+        "performance-analyzer",
+        "performance-benchmarker",
+        "fault-diagnosis-agent",
+        "chaos-experiment-designer",
+        "failure-injection-specialist",
+        "resilience-validator",
+        "log-aggregation-analysis",
+        "chaos-resilience-testing-agent",
+        "benchmark-suite"
+      ]
+    },
+    "data-management": {
+      "description": "Data lifecycle and management",
+      "agents": [
+        "data-lifecycle-hygiene",
+        "test-data-management-specialist",
+        "test-data-environment-provisioner-agent",
+        "test-data-seeding-isolation",
+        "data-analysis-quality-assurance",
+        "change-tracking-audit-agent"
+      ]
+    },
+    "workflow-automation": {
+      "description": "Workflow and automation specialists",
+      "agents": [
+        "workflow",
+        "workflow-orchestration-engine",
+        "automation-smart-agent",
+        "feature-flag-orchestrator",
+        "human-loop-coordination-agent",
+        "workflow-automation"
+      ]
+    },
+    "self-healing-systems": {
+      "description": "Self-healing and autonomous systems",
+      "agents": [
+        "self-healing-code-validator",
+        "autonomous-refactoring-agent",
+        "automated-repair-bug-fixer",
+        "cicd-self-healing-pipeline-agent",
+        "static-analysis-reflection-agent"
+      ]
+    },
+    "optimization-performance": {
+      "description": "System optimization and performance",
+      "agents": [
+        "caching-strategist",
+        "memory-optimizer",
+        "devex-optimization-specialist",
+        "benchmark-suite",
+        "load-balancer",
+        "performance-monitor",
+        "resource-allocator",
+        "topology-optimizer"
+      ]
+    },
+    "ui-ux-development": {
+      "description": "UI/UX development specialists",
+      "agents": [
+        "frontend-ui-code-writer-agent",
+        "design-system-architect",
+        "responsive-design-architect",
+        "interaction-design-specialist",
+        "information-architecture-expert",
+        "performance-ux-optimizer",
+        "gui-ui-testing-agent"
+      ]
+    },
+    "accessibility": {
+      "description": "Accessibility and inclusive development",
+      "agents": [
+        "accessibility-specialist"
+      ]
+    },
+    "content-management": {
+      "description": "Content and media management",
+      "agents": [
+        "notification-communication-architect",
+        "passwordless-auth-specialist"
+      ]
+    },
+    "validation-verification": {
+      "description": "Code validation and verification",
+      "agents": [
+        "production-validator",
+        "independent-verification-agent",
+        "protocol-compliance-validator",
+        "quality-review-loop-controller",
+        "task-completion-assessor",
+        "rollback-safe-release-specialist",
+        "boundary-condition-generator",
+        "edge-case-synthesizer",
+        "test-plan-contrarian"
+      ]
+    },
+    "project-management": {
+      "description": "Project management and planning",
+      "agents": [
+        "project-manager",
+        "roadmap-builder-agent",
+        "metrics-success-criteria-tracker-agent",
+        "version-history-changelog-agent",
+        "release-launch-planning-agent",
+        "human-loop-coordination-agent",
+        "requirements-elicitation-agent",
+        "requirements-skeptic",
+        "scope-creep-sentinel"]
+    },
+    "consensus-distributed": {
+      "description": "Consensus mechanisms and distributed systems",
+      "agents": [
+        "byzantine-coordinator",
+        "gossip-coordinator",
+        "performance-benchmarker",
+        "quorum-manager",
+        "raft-manager",
+        "security-manager"
+      ]
+    },
+    "templates": {
+      "description": "Template and boilerplate generators",
+      "agents": [
+        "automation-smart-agent",
+        "coordinator-swarm-init",
+        "github-pr-manager",
+        "implementer-sparc-coder",
+        "memory-coordinator",
+        "migration-plan",
+        "orchestrator-task",
+        "performance-analyzer",
+        "sparc-coordinator"
+      ]
+    },
+    "mobile-development": {
+      "description": "Mobile development specialists",
+      "agents": []
+    },
+    "misc-utilities": {
+      "description": "Miscellaneous utility agents",
+      "agents": [
+        "mock-design-specialist",
+        "mocked-service-simulation",
+        "mock-stub-integration-specialist",
+        "change-impact-revision-agent",
+        "code-migration-upgrade-agent",
+        "dependency-security-patch-agent",
+        "refactoring-modernization-agent"
+      ]
+    }
+  },
+  "metadata": {
+    "total_agents": 238,
+    "last_updated": "2025-09-14",
+    "purpose": "Homelab Software Development",
+    "categories_count": 31,
+    "verification_status": "Updated with new python-specialist agent - 238 unique agents, 220 .md files"
+  }
+}

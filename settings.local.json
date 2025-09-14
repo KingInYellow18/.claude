@@ -1,0 +1,211 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'mkdir -p /tmp/claude_session/{agents,findings,logs,mcp_queue} 2>/dev/null; SESSION_ID=\"$(uuidgen 2>/dev/null || date +%s)\"; echo \"$SESSION_ID\" > /tmp/claude_session/session_id.txt; echo \"{\\\"session_id\\\": \\\"$SESSION_ID\\\", \\\"started\\\": \\\"$(date)\\\", \\\"mode\\\": \\\"HYBRID\\\", \\\"max_agents\\\": 5}\" > /tmp/claude_session/session.json; echo \"✓ Session $SESSION_ID initialized with synthesis capability\"'"
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if [ -f .claude/hooks/memory_manager.py ]; then python3 .claude/hooks/memory_manager.py init --session-id \"$(cat /tmp/claude_session/session_id.txt)\" 2>/dev/null || true; fi'"
+          }
+        ]
+      }
+    ],
+    
+    "PreToolUse": [
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'TASK_ID=\"task_$(date +%s)_$$\"; echo \"$TASK_ID\" > /tmp/claude_session/current_task.txt; AGENT=$(echo \"$TOOL_INPUT\" | jq -r \".agent // .instruction // empty\" 2>/dev/null | cut -d\" \" -f1); echo \"{\\\"task_id\\\": \\\"$TASK_ID\\\", \\\"timestamp\\\": \\\"$(date)\\\", \\\"agent\\\": \\\"$AGENT\\\", \\\"input_preview\\\": \\\"$(echo \"$TOOL_INPUT\" | head -c 200)\\\"}\" >> /tmp/claude_session/agents/task_queue.jsonl; echo \"[$(date +\"%H:%M:%S\")] Task $TASK_ID starting with agent: $AGENT\" >> /tmp/claude_session/logs/activity.log'"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'if [ -f .claude/hooks/quality_hints.py ]; then python3 .claude/hooks/quality_hints.py 2>/dev/null || true; else echo \"💡 Quality: No TODOs, no console.log, proper error handling\"; fi'"
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'FILE=$(echo \"$TOOL_INPUT\" | jq -r \".file_path // .path // empty\" 2>/dev/null); if [ ! -z \"$FILE\" ]; then echo \"{\\\"timestamp\\\": \\\"$(date)\\\", \\\"file\\\": \\\"$FILE\\\", \\\"operation\\\": \\\"pre_modify\\\", \\\"task\\\": \\\"$(cat /tmp/claude_session/current_task.txt 2>/dev/null)\\\"}\" >> /tmp/claude_session/logs/file_operations.jsonl; fi'"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__serena__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'OPERATION=$(echo \"$TOOL_NAME\" | cut -d_ -f4); echo \"{\\\"timestamp\\\": \\\"$(date)\\\", \\\"operation\\\": \\\"$OPERATION\\\", \\\"task\\\": \\\"$(cat /tmp/claude_session/current_task.txt 2>/dev/null)\\\"}\" >> /tmp/claude_session/logs/serena_operations.jsonl'"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'echo \"[$(date +\"%H:%M:%S\")] Executing: $(echo \"$TOOL_INPUT\" | jq -r \".command\" 2>/dev/null | head -c 100)...\" >> /tmp/claude_session/logs/bash_commands.log'"
+          }
+        ]
+      }
+    ],
+    
+    "PostToolUse": [
+      {
+        "matcher": "Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'TASK_ID=$(cat /tmp/claude_session/current_task.txt 2>/dev/null); OUTPUT=$(echo \"$TOOL_RESPONSE\" | jq -r \".output // .result // .message // empty\" 2>/dev/null); if [ ! -z \"$OUTPUT\" ]; then echo \"$OUTPUT\" > \"/tmp/claude_session/agents/raw_${TASK_ID}.txt\"; LINES=$(echo \"$OUTPUT\" | wc -l); echo \"{\\\"task_id\\\": \\\"$TASK_ID\\\", \\\"timestamp\\\": \\\"$(date)\\\", \\\"output_lines\\\": $LINES, \\\"output_size\\\": ${#OUTPUT}}\" >> /tmp/claude_session/findings/task_outputs.jsonl; fi; echo \"[$(date +\"%H:%M:%S\")] Task $TASK_ID completed\" >> /tmp/claude_session/logs/activity.log'"
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if [ -f .claude/hooks/synthesize_agent_findings.py ]; then TASK_ID=$(cat /tmp/claude_session/current_task.txt 2>/dev/null); python3 .claude/hooks/synthesize_agent_findings.py --mode immediate --task-id \"$TASK_ID\" --temp-dir /tmp/claude_session --use-serena 2>/dev/null || echo \"[$(date)] Synthesis queued for $TASK_ID\" >> /tmp/claude_session/logs/synthesis.log; fi'"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'FILE=$(echo \"$TOOL_INPUT\" | jq -r \".file_path // .path // empty\" 2>/dev/null); SUCCESS=$(echo \"$TOOL_RESPONSE\" | jq -r \".success // false\" 2>/dev/null); if [ ! -z \"$FILE\" ]; then echo \"{\\\"timestamp\\\": \\\"$(date)\\\", \\\"file\\\": \\\"$FILE\\\", \\\"success\\\": \\\"$SUCCESS\\\", \\\"task\\\": \\\"$(cat /tmp/claude_session/current_task.txt 2>/dev/null)\\\"}\" >> /tmp/claude_session/logs/file_modifications.jsonl; fi'"
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if [ -f .claude/hooks/auto_format.py ]; then (python3 .claude/hooks/auto_format.py 2>/dev/null &); fi'"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__context7__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'LIBRARY=$(echo \"$TOOL_INPUT\" | jq -r \".library // .package // empty\" 2>/dev/null); VERSION=$(echo \"$TOOL_RESPONSE\" | jq -r \".version // empty\" 2>/dev/null); if [ ! -z \"$LIBRARY\" ]; then echo \"{\\\"timestamp\\\": \\\"$(date)\\\", \\\"library\\\": \\\"$LIBRARY\\\", \\\"version\\\": \\\"$VERSION\\\", \\\"task\\\": \\\"$(cat /tmp/claude_session/current_task.txt 2>/dev/null)\\\"}\" >> /tmp/claude_session/logs/context7_lookups.jsonl; fi'"
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__serena__save_memory",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'NAMESPACE=$(echo \"$TOOL_INPUT\" | jq -r \".namespace // empty\" 2>/dev/null); KEY=$(echo \"$TOOL_INPUT\" | jq -r \".key // empty\" 2>/dev/null); echo \"{\\\"timestamp\\\": \\\"$(date)\\\", \\\"namespace\\\": \\\"$NAMESPACE\\\", \\\"key\\\": \\\"$KEY\\\", \\\"saved\\\": true}\" >> /tmp/claude_session/logs/serena_saves.jsonl'"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'EXIT_CODE=$(echo \"$TOOL_RESPONSE\" | jq -r \".exit_code // 0\" 2>/dev/null); echo \"[$(date +\"%H:%M:%S\")] Command completed with exit code: $EXIT_CODE\" >> /tmp/claude_session/logs/bash_commands.log'"
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'FILE=$(echo \"$TOOL_INPUT\" | jq -r \".file_path // .path // empty\" 2>/dev/null); if [ ! -z \"$FILE\" ]; then echo \"[$(date +\"%H:%M:%S\")] Read: $FILE\" >> /tmp/claude_session/logs/file_reads.log; fi'"
+          }
+        ]
+      }
+    ],
+    
+    "SubagentStop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'TASK_ID=$(cat /tmp/claude_session/current_task.txt 2>/dev/null); echo \"[$(date +\"%H:%M:%S\")] Subagent completed for task: $TASK_ID\" >> /tmp/claude_session/logs/agent_lifecycle.log'"
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if [ -f .claude/hooks/synthesize_agent_findings.py ] && [ -f /tmp/claude_session/findings/task_outputs.jsonl ]; then PENDING=$(wc -l < /tmp/claude_session/findings/task_outputs.jsonl 2>/dev/null); if [ \"$PENDING\" -ge \"3\" ]; then python3 .claude/hooks/synthesize_agent_findings.py --mode incremental --temp-dir /tmp/claude_session --use-serena 2>/dev/null && echo \"[$(date)] Incremental synthesis completed\" >> /tmp/claude_session/logs/synthesis.log || true; fi; fi'"
+          }
+        ]
+      }
+    ],
+    
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'echo \"[$(date +\"%H:%M:%S\")] Phase complete - running synthesis...\" >> /tmp/claude_session/logs/activity.log'"
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if [ -f .claude/hooks/synthesize_agent_findings.py ]; then python3 .claude/hooks/synthesize_agent_findings.py --mode phase --temp-dir /tmp/claude_session --use-serena --consolidate 2>/dev/null && echo \"✓ Phase synthesis saved to Serena\" || echo \"⚠️ Phase synthesis pending\"; fi'"
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if [ -f .claude/hooks/process_mcp_queue.py ]; then python3 .claude/hooks/process_mcp_queue.py --queue-file /tmp/claude_session/mcp_queue.jsonl 2>/dev/null && echo \"✓ MCP queue processed\" || true; fi'"
+          }
+        ]
+      }
+    ],
+    
+    "PreCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'if [ -f .claude/hooks/context_optimizer.py ]; then python3 .claude/hooks/context_optimizer.py --temp-dir /tmp/claude_session --consolidate-to-serena 2>/dev/null || echo \"📊 Context approaching limit - consider saving progress\"; else echo \"📊 Context check: $(du -sh /tmp/claude_session 2>/dev/null | cut -f1)\"; fi'"
+          }
+        ]
+      }
+    ],
+    
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'SESSION_ID=$(cat /tmp/claude_session/session_id.txt 2>/dev/null); echo \"[$(date)] Beginning final synthesis for session $SESSION_ID...\" >> /tmp/claude_session/logs/activity.log'"
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'SESSION_ID=$(cat /tmp/claude_session/session_id.txt 2>/dev/null); if [ -f .claude/hooks/synthesize_agent_findings.py ]; then python3 .claude/hooks/synthesize_agent_findings.py --mode final --session-id \"$SESSION_ID\" --temp-dir /tmp/claude_session --persist-to-serena --output \"/tmp/claude_session/final_synthesis_${SESSION_ID}.json\" 2>/dev/null && echo \"✓ Final synthesis saved to Serena\" || echo \"⚠️ Manual synthesis review needed\"; fi'"
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if [ -f .claude/hooks/process_mcp_queue.py ]; then python3 .claude/hooks/process_mcp_queue.py --queue-file /tmp/claude_session/mcp_queue.jsonl --final 2>/dev/null && echo \"✓ All MCP operations completed\" || true; fi'"
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'TASKS=$(wc -l < /tmp/claude_session/agents/task_queue.jsonl 2>/dev/null || echo 0); FILES=$(wc -l < /tmp/claude_session/logs/file_modifications.jsonl 2>/dev/null || echo 0); SERENA_OPS=$(wc -l < /tmp/claude_session/logs/serena_operations.jsonl 2>/dev/null || echo 0); CONTEXT7_LOOKUPS=$(wc -l < /tmp/claude_session/logs/context7_lookups.jsonl 2>/dev/null || echo 0); SESSION_ID=$(cat /tmp/claude_session/session_id.txt 2>/dev/null); echo \"{\\\"session_id\\\": \\\"$SESSION_ID\\\", \\\"ended\\\": \\\"$(date)\\\", \\\"tasks_run\\\": $TASKS, \\\"files_modified\\\": $FILES, \\\"serena_operations\\\": $SERENA_OPS, \\\"context7_lookups\\\": $CONTEXT7_LOOKUPS}\" > /tmp/claude_session/session_summary.json; echo \"💾 Session $SESSION_ID complete:\"; echo \"  📋 Tasks: $TASKS\"; echo \"  📝 Files modified: $FILES\"; echo \"  🔍 Serena ops: $SERENA_OPS\"; echo \"  📚 Context7 lookups: $CONTEXT7_LOOKUPS\"'"
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if [ -n \"$(git status --porcelain 2>/dev/null)\" ]; then SESSION_ID=$(cat /tmp/claude_session/session_id.txt 2>/dev/null); git stash push -m \"Claude session $SESSION_ID - $(date)\" >/dev/null 2>&1 && echo \"📦 Work stashed for session $SESSION_ID\"; fi'"
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if [ -f /tmp/claude_session/final_synthesis_*.json ]; then cp /tmp/claude_session/final_synthesis_*.json ./.claude_synthesis_$(date +%Y%m%d_%H%M%S).json 2>/dev/null && echo \"📄 Synthesis exported to project directory\"; fi'"
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if [ -d /tmp/claude_session ]; then tar -czf \"/tmp/claude_session_$(cat /tmp/claude_session/session_id.txt 2>/dev/null)_$(date +%Y%m%d_%H%M%S).tar.gz\" -C /tmp claude_session 2>/dev/null && echo \"🗜️ Session archived\" && rm -rf /tmp/claude_session; fi'"
+          }
+        ]
+      }
+    ]
+  }
+}
