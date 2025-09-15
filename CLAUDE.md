@@ -1,4 +1,4 @@
-# Claude Code Configuration - SPARC Development Environment
+# Claude Code Configuration
 
 ## 🚨 CRITICAL: CONCURRENT EXECUTION & FILE MANAGEMENT
 
