@@ -158,6 +158,15 @@ When receiving any complex request:
 - **Recency filters**: day/week/month/year based on technology volatility
 - **Rate limits**: 20 requests/minute (Starter), batch intelligently
 - **Session management**: Maintain conversation IDs for contextual research
+#### Models Avaiable: 
+**Search**: Models designed to retrieve and synthesize information efficiently.
+- Sonar
+- Sonar Pro
+- **Reasoning**: Models that excel at complex, multi-step tasks.
+- Sonar Reasoning
+- Sonar Reasoning Pro
+- **Research**: Models that conduct in-depth analysis and generate detailed reports.
+- Sonar Deep Research	
 
 ### Serena (Semantic Code Operations)
 - **Always use Serena** for code navigation and understanding
